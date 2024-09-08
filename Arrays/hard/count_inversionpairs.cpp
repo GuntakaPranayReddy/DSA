@@ -31,11 +31,10 @@ int ms(vector<int>&arr,int low,int mid,int high)                  //  method-2(p
 {
     int left=low;
     int right=mid+1;
-    int cnt=0;
     vector<int>temp;
     while(left<=mid && right<=high)
     {
-        if(arr[left]<arr[right])
+        if(arr[left]<=arr[right])
         {
             temp.push_back(arr[left]);
             left++;
@@ -43,18 +42,9 @@ int ms(vector<int>&arr,int low,int mid,int high)                  //  method-2(p
         else
         {
             temp.push_back(arr[right]);
-            int p=left;
-            while(p<mid+1)
-            { if(arr[p]>2*arr[right])
-                {
-                    cnt=cnt+1;
-                }
-               p++;
-            }
             right++;
-           }
+        }
     }
-    
     while(left<=mid)
     {
         temp.push_back(arr[left]);
@@ -69,19 +59,30 @@ int ms(vector<int>&arr,int low,int mid,int high)                  //  method-2(p
     {
        arr[i]=temp[i-low];
     }
+}
+int countpairs(vector<int> &arr, int low, int mid, int high) 
+{
+    int right = mid + 1;
+    int cnt = 0;
+    for (int i = low; i <= mid; i++) 
+    {
+        while (right <= high && arr[i] > arr[right]) right++;
+        cnt += (right - (mid + 1));
+    }
     return cnt;
 }
 int merge_sort(vector<int>&arr,int low,int high)
-{   int cnt=0;
+{
     if(low>=high)
     {
-        return cnt;
+        return 0;
     }
     int mid=(low+high)/2;
-    cnt=cnt+merge_sort(arr,low,mid);
-    cnt=cnt+merge_sort(arr,mid+1,high);
-    cnt=cnt+ms(arr,low,mid,high);
-    return cnt;
+    int cnt1=merge_sort(arr,low,mid);
+    int cnt2=merge_sort(arr,mid+1,high);
+    int cnt3=countpairs(arr,low,mid,high);
+    ms(arr,low,mid,high);
+    return cnt1+cnt2+cnt3;
 }
 int numberOfInversions(vector<int>&arr, int n)
 {
